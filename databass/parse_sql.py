@@ -336,7 +336,7 @@ class Visitor(NodeVisitor):
     return node.text
 
   def visit_binaryop_no_andor(self, node, children):
-    return node.text
+    return node.text.lower()
 
   def visit_biexpr(self, node, children):
     op, lhs, rhs = children[2], children[0], children[-1]
