@@ -25,7 +25,7 @@ grammar = Grammar(
     select_cores   = select_core (compound_op select_core)*
     select_core    = SELECT distinct_clause? wsp select_results from_clause? where_clause? gb_clause? having_clause?
     select_results = select_result (ws "," ws select_result)*
-    select_result  = sel_res_all_star / sel_res_tab_star / sel_res_val / sel_res_col 
+    select_result  = sel_res_all_star / sel_res_tab_star / sel_res_val / sel_res_col
     sel_res_tab_star = name ".*"
     sel_res_all_star = "*"
     sel_res_val    = exprand (AS wsp name)?
@@ -34,7 +34,7 @@ grammar = Grammar(
 
     from_clause    = FROM join_source
     join_source    = ws single_source (ws "," ws single_source)*
-    single_source  = source_func / source_table / source_subq 
+    single_source  = source_func / source_table / source_subq
     source_table   = table_name (AS wsp name)?
     source_subq    = "(" ws query ws ")" (AS wsp name)?
     source_func    = function (AS wsp name)?
@@ -61,18 +61,18 @@ grammar = Grammar(
     btwnexpr = value BETWEEN wsp value AND wsp value
     biexpr   = value ws binaryop_no_andor ws expr
     unexpr   = unaryop expr
-    value    = parenq / 
-               parenval / 
+    value    = parenq /
+               parenval /
                listval /
                number /
                boolean /
-               date / 
+               date /
                function /
                col_ref /
                string /
                attr
     parenval = "(" ws expr ws ")"
-    parenq   = "(" query ")" 
+    parenq   = "(" query ")"
     listval  = "(" ws expr (ws "," ws expr)* ws ")"
     function = fname "(" ws arg_list? ws ")"
     arg_list = expr (ws "," ws expr)*
@@ -83,17 +83,17 @@ grammar = Grammar(
     boolean  = "true" / "false"
     date     = ("date" / "DATE") wsp dateregex
     compound_op = "UNION" / "union"
-    binaryop = "+" / "-" / "*" / "/" / "==" / "=" / "<>" / "!=" / 
-               "<=" / ">=" / "<" / ">" / "and" / 
-               "AND" / "or" / "OR" / "like" / "LIKE" 
-    binaryop_no_andor = "+" / "-" / "*" / "/" / "==" / "=" / "<>" / "!=" / 
-               "<=" / ">=" / "<" / ">" / "or " / "OR " / "like " / "LIKE " 
+    binaryop = "+" / "-" / "*" / "/" / "==" / "=" / "<>" / "!=" /
+               "<=" / ">=" / "<" / ">" / "and" /
+               "AND" / "or" / "OR" / "like" / "LIKE"
+    binaryop_no_andor = "+" / "-" / "*" / "/" / "==" / "=" / "<>" / "!=" /
+               "<=" / ">=" / "<" / ">" / "or" / "OR" / "like" / "LIKE"
     unaryop  = "+" / "-" / "not" / "NOT"
     ws       = ~"\s*"i
     wsp      = ~"\s+"i
 
     dateregex  = ~"'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]|(?:Jan|Mar|May|Jul|Aug|Oct|Dec)))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2]|(?:Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)(?:0?2|(?:Feb))\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9]|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep))|(?:1[0-2]|(?:Oct|Nov|Dec)))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'"
-    name       = ~"[a-zA-Z\_][\w\_]*"i /  ~"`[a-zA-Z][\w\.\-\_\:\*]*`"i / ~"\[[a-zA-Z][\w\.\-\_\:\*]*\]"i 
+    name       = ~"[a-zA-Z\_][\w\_]*"i /  ~"`[a-zA-Z][\w\.\-\_\:\*]*`"i / ~"\[[a-zA-Z][\w\.\-\_\:\*]*\]"i
     table_name = name
     column_name = name
 
@@ -171,7 +171,7 @@ grammar = Grammar(
 
 def flatten(children, sidx, lidx):
   """
-  Helper function used in Visitor to flatten and filter 
+  Helper function used in Visitor to flatten and filter
   lists of lists
   """
   ret = [children[sidx]]
@@ -186,12 +186,12 @@ class Visitor(NodeVisitor):
   Each expression in the grammar above of the form
 
       XXX = ....
-  
-  can be handled with a custom function by writing 
-  
+
+  can be handled with a custom function by writing
+
       def visit_XXX(self, node, children):
 
-  You can assume the elements in children are the handled 
+  You can assume the elements in children are the handled
   versions of the corresponding child nodes
   """
   grammar = grammar
@@ -257,7 +257,7 @@ class Visitor(NodeVisitor):
 
   def visit_source_subq(self, node, children):
     subq = children[2]
-    alias = children[5] 
+    alias = children[5]
     if not alias: alias = None
     return PRangeVar(subq, alias, PRangeVar.QUERY)
 
@@ -316,7 +316,7 @@ class Visitor(NodeVisitor):
 
   def visit_col_ref(self, node, children):
     tname = children[0]
-    if not tname: 
+    if not tname:
       tname = None
     return Attr(children[1], None, tname)
 
@@ -373,7 +373,7 @@ class Visitor(NodeVisitor):
     f = UDFRegistry.registry()[fname]
     if not f:
       raise Exception("Function %s not found" % fname)
-    if f.is_agg: 
+    if f.is_agg:
       if f.is_incremental:
         return IncAggFunc(f, arglist)
       return AggFunc(f, arglist)
@@ -384,7 +384,7 @@ class Visitor(NodeVisitor):
 
   def visit_arg_list(self, node, children):
     return flatten(children, 0, 1)
-  
+
   def visit_number(self, node, children):
     return Literal(float(node.text))
 
@@ -413,7 +413,7 @@ class Visitor(NodeVisitor):
 
   def visit_dateregex(self, node, children):
     return parsedate(children[0])
-    
+
   def visit_listval(self, node, children):
     exprs = flatten(children, 2, 3)
     return List(exprs)
@@ -422,7 +422,7 @@ class Visitor(NodeVisitor):
 
   def generic_visit(self, node, children):
     children = list([v for v in children if v and (not isinstance(v, str) or v.strip())])
-    if len(children) == 1: 
+    if len(children) == 1:
       return children[0]
     return children
 
@@ -430,5 +430,3 @@ def parse(s):
   query = Visitor().parse(s)
   query.initialize()
   return query
-
-
