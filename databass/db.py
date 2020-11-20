@@ -84,6 +84,7 @@ class Database(object):
     self.registry[tablename] = table
     self.id2table[table.id] = table
 
+  # TODO(ic2389): Register column-oriented dataframe
   def register_dataframe(self, tablename, df):
     self._df_registry[tablename] = df
     schema = infer_schema_from_df(df)

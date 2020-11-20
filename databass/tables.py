@@ -33,7 +33,6 @@ class Table(object):
     if not columns:
       return InMemoryColumnTable(Schema([]), columns)
     # TODO(ic2389): Build schema. Construct and return in-memory column table.
-    # Or not since this method isn't really used.
 
   @property
   def stats(self):
@@ -72,3 +71,9 @@ class InMemoryColumnTable(Table):
     super(InMemoryColumnTable, self).__init__(schema)
     self.columns = columns
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
+
+  # Override
+  def __iter__(self):
+    for column in self.columns:
+      # TODO(ic2389)
+      pass
