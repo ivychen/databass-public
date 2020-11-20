@@ -28,6 +28,13 @@ class Table(object):
     schema = Table.schema_from_rows(list(rows[0].keys()), rows)
     return InMemoryTable(schema, rows)
 
+  @staticmethod
+  def from_columns(columns):
+    if not columns:
+      return InMemoryColumnTable(Schema([]), columns)
+    # TODO(ic2389): Build schema. Construct and return in-memory column table.
+    # Or not since this method isn't really used.
+
   @property
   def stats(self):
     if self._stats is None:
@@ -57,3 +64,11 @@ class InMemoryTable(Table):
     for row in self.rows:
       yield ListTuple(self.schema, row)
 
+class InMemoryColumnTable(Table):
+  """
+  Column-oriented table that stores its data as arrays in memory.
+  """
+  def __init__(self, schema, columns):
+    super(InMemoryColumnTable, self).__init__(schema)
+    self.columns = columns
+    self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
