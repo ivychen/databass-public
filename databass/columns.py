@@ -10,6 +10,5 @@ class ArrayColumn(Column):
   Represents a column that stores data in arrays.
   """
   def __init__(self):
-    super(ByteArrayColumn, self).__init__()
-
+    super(ArrayColumn, self).__init__()
     self.data = []
