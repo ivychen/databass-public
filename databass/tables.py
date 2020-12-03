@@ -65,15 +65,19 @@ class InMemoryTable(Table):
 
 class InMemoryColumnTable(Table):
   """
-  Column-oriented table that stores its data as arrays in memory.
+  Column-oriented table that stores data in-memory in columnar format.
+
+  Attributes:
+  
+  schema(Schema) - this defined the schema for the table
+  columns(list(ColumnTuple)) - list of ColumnTuples
   """
   def __init__(self, schema, columns):
     super(InMemoryColumnTable, self).__init__(schema)
     self.columns = columns
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
 
-  # Override
   def __iter__(self):
     for column in self.columns:
-      # TODO(ic2389)
+      # TODO(ic2389): Override column iteration
       pass

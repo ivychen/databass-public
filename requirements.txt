@@ -1,3 +1,4 @@
+## Base
 pandas
 numpy
 gnureadline
@@ -5,3 +6,6 @@ click
 pytest
 parsimonious
 sqlalchemy
+
+## Additions
+deprecation

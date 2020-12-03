@@ -5,6 +5,10 @@ import sys
 from databass import *
 from databass.ops import *
 
+simple_queries = [
+  "SELECT * FROM tdata LIMIT 2"
+]
+
 def main():
   pass
 
