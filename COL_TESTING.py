@@ -9,7 +9,7 @@ simple_queries = [
 ]
 
 def setup():
-  mode = Mode.COLUMN # either Mode.ROW or Mode.COLUMN
+  mode = Mode.COLUMN_ALL # either Mode.ROW or Mode.COLUMN_ALL or Mode.COLUMN_SELECT
   print("setup db in mode...", mode)
   db = Database.db(mode)
 

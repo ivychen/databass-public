@@ -9,9 +9,19 @@ import enum
 
 openfile = open
 
+"""
+"""
 class Mode(enum.Enum):
-  ROW = 1
-  COLUMN = 2
+  ROW = 1 # Loads all rows into memory
+  COLUMN_ALL = 2 # Loads all columns into memory
+  COLUMN_SELECT = 3 # Load only select columns into database
+
+"""
+Each subsequent phase incorporates the previous phase.
+"""
+class Phase(enum.Enum):
+  COL_FORMAT = 1
+  COL_COMPRESSION = 2
 
 def infer_schema_from_df(df):
   from .exprs import guess_type, Attr
@@ -99,10 +109,13 @@ class Database(object):
       rows = [[row[attr.aname] for attr in schema] for row in rows]
       table = InMemoryTable(schema, rows)
       self.register_table(tablename, schema, table)
-    elif self._mode == Mode.COLUMN:
+    elif self._mode == Mode.COLUMN_ALL:
       columns = [df[df_colname].values.tolist() for df_colname in df]
       table = InMemoryColumnTable(schema, columns)
       self.register_table(tablename, schema, table)
+    elif self._mode == Mode.COLUMN_SELECT:
+      print("COLUMN_SELECT MODE IS NOT IMPLEMENTED")
+      pass
 
   @property
   def tablenames(self):
