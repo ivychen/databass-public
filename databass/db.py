@@ -1,13 +1,17 @@
 from .util import guess_type
 from .schema import Schema
 from .tables import *
+from .columns import ColumnTuple
 import pandas
 import numbers
 import os
+import enum
 
 openfile = open
 
-
+class Mode(enum.Enum):
+  ROW = 1
+  COLUMN = 2
 
 def infer_schema_from_df(df):
   from .exprs import guess_type, Attr
@@ -32,18 +36,19 @@ class Database(object):
   """
   Manages all tables registered in the database
   """
-  def __init__(self):
+  def __init__(self, mode=Mode.ROW):
     self.registry = {}
     self.id2table = {}
     self._df_registry = {}
     self.function_registry = {}
     self.table_function_registry = {}
+    self._mode = mode
     self.setup()
 
   @staticmethod
-  def db():
+  def db(mode=Mode.ROW):
     if not Database._db:
-      Database._db = Database()
+      Database._db = Database(mode)
     return Database._db
 
   def setup(self):
@@ -88,14 +93,24 @@ class Database(object):
   def register_dataframe(self, tablename, df):
     self._df_registry[tablename] = df
     schema = infer_schema_from_df(df)
-    rows = list(df.T.to_dict().values())
-    rows = [[row[attr.aname] for attr in schema] for row in rows]
-    table = InMemoryTable(schema, rows)
-    self.register_table(tablename, schema, table)
+
+    if self._mode == Mode.ROW:
+      rows = list(df.T.to_dict().values())
+      rows = [[row[attr.aname] for attr in schema] for row in rows]
+      table = InMemoryTable(schema, rows)
+      self.register_table(tablename, schema, table)
+    elif self._mode == Mode.COLUMN:
+      columns = [df[df_colname].values.tolist() for df_colname in df]
+      table = InMemoryColumnTable(schema, columns)
+      self.register_table(tablename, schema, table)
 
   @property
   def tablenames(self):
     return list(self.registry.keys())
+
+  @property
+  def mode(self):
+    return self._mode
 
   def schema(self, tablename):
     return self[tablename].schema
