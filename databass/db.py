@@ -10,6 +10,11 @@ import enum
 openfile = open
 
 """
+Mode to initialize the database.
+
+ROW = default row-store
+COLUMN_ALL = column-store, loads all columns into memory
+COLUMN_SELECT = column-store, load only some columns into memory
 """
 class Mode(enum.Enum):
   ROW = 1 # Loads all rows into memory
@@ -68,8 +73,12 @@ class Database(object):
     """
     for root, dirs, files in os.walk("."):
       for fname in files:
-        if fname.lower().endswith(".csv"):
-          self.register_file_by_path(os.path.join(root, fname))
+        if self._mode == Mode.ROW:
+          if fname.lower().endswith(".csv"):
+            self.register_file_by_path(os.path.join(root, fname))
+        else:
+          if fname.lower().endswith(".tbl"):
+            self.register_file_by_path(os.path.join(root, fname))
 
   def register_file_by_path(self, path):
     root, fname = os.path.split(path)
@@ -110,6 +119,7 @@ class Database(object):
       table = InMemoryTable(schema, rows)
       self.register_table(tablename, schema, table)
     elif self._mode == Mode.COLUMN_ALL:
+      print("[setup] table {tablename} with schema:".format(tablename=tablename), schema)
       columns = [df[df_colname].values.tolist() for df_colname in df]
       table = InMemoryColumnTable(schema, columns)
       self.register_table(tablename, schema, table)

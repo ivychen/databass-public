@@ -1,5 +1,8 @@
 __pycache__
 .vscode/
 
+.DS_Store
 */.DS_Store
 *.pyc
+
+col_data/lineorder.tbl

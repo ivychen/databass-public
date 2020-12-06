@@ -3,6 +3,7 @@ import numbers
 import os
 from .stats import Stats
 from .tuples import *
+from .columns import * # ColumnTuple
 from .exprs import Attr
 
 class Table(object):
@@ -79,5 +80,6 @@ class InMemoryColumnTable(Table):
 
   def __iter__(self):
     for column in self.columns:
-      # TODO(ic2389): Override column iteration
       pass
+      # col_schema = Schema([])
+      # yield ColumnTuple(self.schema, column)
