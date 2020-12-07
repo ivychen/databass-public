@@ -34,6 +34,7 @@ def run_query(db, qstr):
 
 def run_plan(db, plan):
   databass_rows = list()
+  # plan = Optimizer(db, SelingerOpt)(plan)
   plan = Optimizer(db)(plan)
   for row in plan:
     vals = []

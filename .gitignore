@@ -4,8 +4,3 @@ __pycache__
 .DS_Store
 */.DS_Store
 *.pyc
-
-*.tbl
-*.tbl.zip
-col_data/lineorder.tbl
-col_data/lineorder.tbl.zip

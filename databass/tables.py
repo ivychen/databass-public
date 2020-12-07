@@ -1,11 +1,16 @@
 import pandas
 import numbers
 import os
+import enum
 from .stats import Stats
 from .tuples import *
 from .columns import * # ColumnTuple
 from .exprs import Attr
 from .schema import Schema
+
+class TableType(enum.Enum):
+  ROW = 1
+  COLUMN = 2
 
 class Table(object):
   """
@@ -56,6 +61,7 @@ class InMemoryTable(Table):
   """
   def __init__(self, schema, rows):
     super(InMemoryTable, self).__init__(schema)
+    self._type = TableType.ROW
     self.rows = rows
     self.attr_to_idx = { a.aname: i 
         for i,a in enumerate(self.schema)}
@@ -64,6 +70,10 @@ class InMemoryTable(Table):
     # Iterate through each row in table
     for row in self.rows:
       yield ListTuple(self.schema, row)
+
+  @property
+  def type(self):
+    return self._type
 
 class InMemoryColumnTable(Table):
   """
@@ -76,6 +86,7 @@ class InMemoryColumnTable(Table):
   """
   def __init__(self, schema, columns):
     super(InMemoryColumnTable, self).__init__(schema)
+    self._type = TableType.COLUMN
     self.columns = columns
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
     # maps index to attribute
@@ -92,3 +103,7 @@ class InMemoryColumnTable(Table):
     #   attr = self.idx_to_attr[idx]
     #   col_schema.attrs.append(attr)
     #   yield ColumnTuple(col_schema, column)
+
+  @property
+  def type(self):
+    return self._type
