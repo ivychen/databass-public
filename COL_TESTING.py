@@ -1,5 +1,6 @@
 # Standard imports
 import sys
+import time
 
 # Databass imports
 from databass import *
@@ -55,9 +56,11 @@ def setup_row():
   print("\n=== ROW MODE: RUNNING QUERIES ===\n")
 
   for qstr in simple_test:
-    print("[debug] running query: ", qstr)
+    print("[query]", qstr)
+    start = time.time()
     output = run_query(db, qstr)
     print(output)
+    print("[query] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END ROW MODE ===\n")
 
@@ -73,9 +76,11 @@ def setup_col():
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
   for qstr in simple_test:
-    print("[debug] running query: ", qstr)
+    print("[query] ", qstr)
+    start = time.time()
     output = run_query(db, qstr)
     print(output)
+    print("[query] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END COL MODE ===\n")
 
