@@ -59,7 +59,7 @@ def setup_row():
     output = run_query(db, qstr)
     print(output)
 
-  print("=== END ROW MODE ===\n")
+  print("\n=== END ROW MODE ===\n")
 
 def setup_col():
   print("=== RUNNING IN COL MODE ===\n")
@@ -77,7 +77,7 @@ def setup_col():
     output = run_query(db, qstr)
     print(output)
 
-  print("=== END COL MODE ===\n")
+  print("\n=== END COL MODE ===\n")
 
 def main():
   setup_col()
