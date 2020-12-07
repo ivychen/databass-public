@@ -79,7 +79,8 @@ class InMemoryColumnTable(Table):
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
 
   def __iter__(self):
-    for column in self.columns:
-      pass
-      # col_schema = Schema([])
-      # yield ColumnTuple(self.schema, column)
+    for i in range(len(self.columns[0])):
+      row = []
+      for cols in self.columns:
+        row.append(cols[i])
+      yield ListTuple(self.schema, row)
