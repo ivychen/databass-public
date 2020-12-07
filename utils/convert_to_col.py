@@ -1,7 +1,6 @@
 import pandas
 import os
 
-# for root, dirs, files in os.walk("."):
 
 def load_data(file: str):
     for sep in [',', '|', '\t']:
