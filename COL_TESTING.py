@@ -16,7 +16,10 @@ experiemnt_two = [
   "SELECT nation FROM customer WHERE nation = 'UNITED STATES'"
 ]
 
-test_q = "SELECT * FROM data"
+simple_test = [
+  "SELECT * FROM data",
+  "SELECT a, b FROM data"
+]
 
 def setup():
   mode = Mode.COLUMN_ALL # either Mode.ROW or Mode.COLUMN_ALL or Mode.COLUMN_SELECT
@@ -46,7 +49,12 @@ def run_q(opt: Optimizer, q: str):
 def main():
   db = setup()
   opt = Optimizer(db)
-  print(run_q(opt, test_q))
+  for q in simple_test:
+    print("\nRunning q: %s", q)
+    res = run_q(opt, q)
+    for row in res:
+      print(row)
+    print("--------\n")
 
 
 if __name__ == "__main__":
