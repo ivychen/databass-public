@@ -42,7 +42,6 @@ class Table(object):
       self._stats = Stats(self)
     return self._stats
 
-
   def col_values(self, field):
     idx = self.schema.idx(Attr(field.aname))
     return [row[idx] for row in self]

@@ -78,7 +78,7 @@ class Database(object):
           if fname_lower.endswith(".tbl"):
             self.register_file_by_path(os.path.join(root, fname))
         else:
-          if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
+          if fname_lower.endswith("data.tbl"):
             self.register_file_by_path(os.path.join(root, fname))
 
   def register_file_by_path(self, path):

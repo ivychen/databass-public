@@ -76,13 +76,12 @@ class Scan(Source):
     return self.schema
 
   def __iter__(self):
-    if self.db.mode == Mode.ROW:
-      # initialize a single intermediate tuple
-      irow = ListTuple(self.schema, [])
+    # initialize a single intermediate tuple
+    irow = ListTuple(self.schema, [])
 
-      for row in self.db[self.tablename]:
-        irow.row = row.row
-        yield irow
+    for row in self.db[self.tablename]:
+      irow.row = row.row
+      yield irow
 
   def __str__(self):
     return "Scan(%s AS %s)" % (self.tablename, self.alias)
