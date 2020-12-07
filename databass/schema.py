@@ -6,6 +6,9 @@ from .exprs import *
 
 class Schema(object):
   def __init__(self, attrs):
+    """
+    attrs: list of Attr objects
+    """
     self.attrs = attrs or []
 
   def __iter__(self):

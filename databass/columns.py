@@ -30,7 +30,7 @@ class ColumnTuple(object):
     return self.column[idx]
 
   def __setitem_(self, idx, val):
-    self.row[idx] = val
+    self.column[idx] = val
 
   def __str__(self):
-    return "(%s)" % ", ".join(map(str, self.column))
+    return "schema: {schema}\n".format(schema=self.schema) + "data: (%s)" % ", ".join(map(str, self.column))

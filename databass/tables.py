@@ -5,6 +5,7 @@ from .stats import Stats
 from .tuples import *
 from .columns import * # ColumnTuple
 from .exprs import Attr
+from .schema import Schema
 
 class Table(object):
   """
@@ -61,6 +62,7 @@ class InMemoryTable(Table):
         for i,a in enumerate(self.schema)}
 
   def __iter__(self):
+    # Iterate through each row in table
     for row in self.rows:
       yield ListTuple(self.schema, row)
 
@@ -77,6 +79,8 @@ class InMemoryColumnTable(Table):
     super(InMemoryColumnTable, self).__init__(schema)
     self.columns = columns
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
+    # maps index to attribute
+    self.idx_to_attr = {i: a for i, a in enumerate(self.schema)}
 
   def __iter__(self):
     for i in range(len(self.columns[0])):
@@ -84,3 +88,8 @@ class InMemoryColumnTable(Table):
       for cols in self.columns:
         row.append(cols[i])
       yield ListTuple(self.schema, row)
+    # for idx, column in enumerate(self.columns):
+    #   col_schema = Schema([])
+    #   attr = self.idx_to_attr[idx]
+    #   col_schema.attrs.append(attr)
+    #   yield ColumnTuple(col_schema, column)
