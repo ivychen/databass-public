@@ -5,6 +5,7 @@ from ..baseops import UnaryOp
 from ..exprs import *
 from ..schema import *
 from ..tuples import *
+from ..db import Mode
 from ..util import cache, OBTuple
 from itertools import chain
 
@@ -65,7 +66,6 @@ class Scan(Source):
     from ..db import Database
     self.db = Database.db()
 
-
   def init_schema(self):
     """
     A source operator's schema should be initialized with the same 
@@ -76,13 +76,13 @@ class Scan(Source):
     return self.schema
 
   def __iter__(self):
-    # initialize a single intermediate tuple
-    irow = ListTuple(self.schema, [])
+    if self.db.mode == Mode.ROW:
+      # initialize a single intermediate tuple
+      irow = ListTuple(self.schema, [])
 
-    for row in self.db[self.tablename]:
-      irow.row = row.row
-      yield irow
-
+      for row in self.db[self.tablename]:
+        irow.row = row.row
+        yield irow
 
   def __str__(self):
     return "Scan(%s AS %s)" % (self.tablename, self.alias)
