@@ -164,11 +164,13 @@ class PSelectQuery(POp):
         aliases = []
         if not self.is_agg_query:
           for t in self.targets:
-            # print("targets: ", self.targets)
-            project_exprs.append(t.e)
-            aliases.append(t.alias)
-        fop = ScanWithProject(r.e, project_exprs, aliases, r.alias)
-        # fop = Scan(r.e, r.alias)
+            # print("target:", t, "t.e.tablename:", t.e.tablename, "r:", r)
+            if r.e == t.e.tablename or t.e.tablename == None:
+              project_exprs.append(t.e)
+              aliases.append(t.alias)
+          fop = ScanWithProject(r.e, project_exprs, aliases, r.alias)
+        else:
+          fop = Scan(r.e, r.alias)
       elif r.typ == PRangeVar.QUERY:
         fop = SubQuerySource(r.e.to_plan(), r.alias)
       else:

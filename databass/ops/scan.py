@@ -73,7 +73,6 @@ class Scan(Source):
     """
     self.schema = self.db.schema(self.tablename).copy()
     self.schema.set_tablename(self.alias)
-    print("schema: ", self.schema)
     return self.schema
 
   def __iter__(self):
@@ -91,6 +90,7 @@ class Scan(Source):
 class ScanWithProject(Source):
   def __init__(self, tablename, exprs, aliases=[], alias=None):
     super(ScanWithProject, self).__init__()
+    print("scan with project:", tablename)
     self.tablename = tablename
     self.alias = alias or tablename
     self.exprs = exprs
@@ -104,12 +104,17 @@ class ScanWithProject(Source):
     A source operator's schema should be initialized with the same 
     tablename as the operator's alias
     """
-    # print("table schema: ", self.db.schema(self.tablename))
+    # print("table:", self.tablename,"schema: ", self.db.schema(self.tablename))
     self.schema = Schema([])
-    for alias, expr in zip(self.aliases, self.exprs):
-      typ = expr.get_type()
-      self.schema.attrs.append(Attr(alias, typ))
+    if len(self.exprs) > 0:
+      for alias, expr in zip(self.aliases, self.exprs):
+        # print("alias:", alias, "expr:", expr)
+        typ = expr.get_type()
+        self.schema.attrs.append(Attr(alias, typ))
+    else:
+      self.schema = self.db.schema(self.tablename)
     self.schema.set_tablename(self.alias)
+    # print("table:", self.tablename, "schema:", self.schema)
     return self.schema
 
   def __iter__(self):
@@ -120,7 +125,7 @@ class ScanWithProject(Source):
       for row_index in range(len(self.db[self.tablename])):
         for i, exp in enumerate(self.exprs):
           col_index = exp.aname
-          print(row_index, col_index)
+          # print(row_index, col_index)
           val = self.db[self.tablename][(row_index, col_index)]
           irow.row[i] = val
         yield irow

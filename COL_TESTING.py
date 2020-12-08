@@ -19,7 +19,7 @@ experiment_one = [
 
 experiment_two = [
   "SELECT lo_orderkey FROM lineorder",
-  "SELECT p_category FROM part LIMIT 20",
+  "SELECT p_name, p_category FROM part LIMIT 20",
   "SELECT c_nation FROM customer WHERE nation = 'UNITED STATES'"
 ]
 
@@ -73,7 +73,7 @@ def setup_col():
 
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
-  for qstr in experiment_two[1:2]:
+  for qstr in simple_test:
     print("[query] ", qstr)
     start = time.time()
     output = run_query(db, qstr)

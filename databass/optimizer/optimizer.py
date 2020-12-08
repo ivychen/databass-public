@@ -65,6 +65,7 @@ class Optimizer(object):
       if not c.is_type([POp, ExprBase]):
         self.initialize_and_resolve(c)
     op.init_schema()
+    # print("op:", op, "with schema:", op.schema)
 
     if op.is_type([ThetaJoin,Filter]):
       # ThetaJoin internally concats the left and right tuples into an
@@ -88,10 +89,10 @@ class Optimizer(object):
         else:
           self.resolve_attr_idxs(op.group_term_schema, e)
 
-    # print(op)
     return op
 
   def find_idx(self, schema, a):
+    # print("find:", a, "from:", schema)
     found = []
     for i, a2 in enumerate(schema):
       if a2.matches(a):
