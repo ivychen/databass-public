@@ -1,3 +1,9 @@
+import enum
+
+class TableType(enum.Enum):
+  ROW = 1
+  COLUMN = 2
+
 class ColStats(object):
   def __init__(self, table_id, col_idx, 
       nrows, card, frac_null, 
@@ -15,7 +21,11 @@ class Stats(object):
   
   def __init__(self, table):
     self.table = table
-    self.card = len(table.rows)
+
+    if table.type == TableType.ROW:
+      self.card = len(table.rows)
+    elif table.type == TableType.COLUMN:
+      self.card = len(table.columns[0])
 
     self.col_stats = dict()
 

@@ -1,16 +1,11 @@
 import pandas
 import numbers
 import os
-import enum
-from .stats import Stats
+from .stats import Stats, TableType
 from .tuples import *
 from .columns import * # ColumnTuple
 from .exprs import Attr
 from .schema import Schema
-
-class TableType(enum.Enum):
-  ROW = 1
-  COLUMN = 2
 
 class Table(object):
   """
@@ -65,6 +60,10 @@ class InMemoryTable(Table):
     self.rows = rows
     self.attr_to_idx = { a.aname: i 
         for i,a in enumerate(self.schema)}
+    # Populates col_stats with stats for each attribute in the schema
+    self.stats
+    for attr in self.schema:
+      self.stats[attr]
 
   def __iter__(self):
     # Iterate through each row in table
@@ -91,8 +90,13 @@ class InMemoryColumnTable(Table):
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
     # maps index to attribute
     self.idx_to_attr = {i: a for i, a in enumerate(self.schema)}
+    # Populates col_stats with stats for each attribute in the schema
+    self.stats
+    for attr in self.schema:
+      self.stats[attr]
 
   def __iter__(self):
+    # TODO: READ SUBSET OF COLUMNS FROM DISK COLUMN FILES
     for i in range(len(self.columns[0])):
       row = []
       for cols in self.columns:

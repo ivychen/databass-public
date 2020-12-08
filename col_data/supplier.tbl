@@ -1,3 +1,4 @@
+s_suppkey,s_name,s_address,s_city,s_nation,s_region,s_phone
 1,"Supplier#000000001","sdrGnXCDRcfriBvY0KL,i","PERU     9","PERU","AMERICA","27-989-741-2988"
 2,"Supplier#000000002","TRMhVHz3XiFu","ETHIOPIA 2","ETHIOPIA","AFRICA","15-768-687-3665"
 3,"Supplier#000000003","BZ0kXcHUcHjx62L7CjZS","ARGENTINA5","ARGENTINA","AMERICA","11-719-748-3364"

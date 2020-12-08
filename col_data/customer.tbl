@@ -1,3 +1,4 @@
+c_custkey,c_name,c_address,c_city,c_nation,c_region,c_phone,c_mktsegment
 1,"Customer#000000001","j5JsirBM9P","MOROCCO  6","MOROCCO","AFRICA","25-214-662-5265","BUILDING"
 2,"Customer#000000002","487LW1dovn6Q4dMVym","JORDAN   0","JORDAN","MIDDLE EAST","23-159-880-1131","AUTOMOBILE"
 3,"Customer#000000003","fkRGN8n","ARGENTINA4","ARGENTINA","AMERICA","11-913-966-3595","AUTOMOBILE"

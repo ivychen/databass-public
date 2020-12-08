@@ -73,12 +73,17 @@ class Scan(Source):
     """
     self.schema = self.db.schema(self.tablename).copy()
     self.schema.set_tablename(self.alias)
+    print("scan schema", self.schema)
+    # TODO: Define schema based on attributes needed for query execution (this
+    # can come from the parser/query plan)
     return self.schema
 
   def __iter__(self):
     # initialize a single intermediate tuple
     irow = ListTuple(self.schema, [])
 
+    # Override ColumnTable iterator to accept schema as parameter, then read
+    # only select columns from disk.
     for row in self.db[self.tablename]:
       irow.row = row.row
       yield irow

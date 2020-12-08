@@ -77,6 +77,7 @@ class GroupBy(UnaryOp):
 
     self.group_attrs = list(seen.values())
     self.group_term_schema = Schema(self.group_attrs)
+    print("groupby schema", self.schema)
     return self.schema
 
   def __iter__(self):

@@ -7,12 +7,9 @@ from databass import *
 
 simple_test = [
   "SELECT * FROM data",
-  "SELECT a, b FROM data"
-]
-
-debug_queries = [
-  "SELECT * FROM date LIMIT 10",
-  "SELECT c_custkey, s_suppkey FROM customer, supplier WHERE customer.c_nation = supplier.s_nation"
+  "SELECT a, b FROM data",
+  "SELECT data.e FROM data GROUP BY data.e",
+  "SELECT data.a, data4.a FROM data, data4 WHERE data.a = data4.a"
 ]
 
 experiment_one = [
@@ -30,12 +27,13 @@ experiment_two = [
 def run_query(db, qstr):
   plan = parse(qstr)
   plan = plan.to_plan()
+  print("QUERY PLAN", plan.pretty_print())
   return run_plan(db, plan)
 
 def run_plan(db, plan):
   databass_rows = list()
-  # plan = Optimizer(db, SelingerOpt)(plan)
-  plan = Optimizer(db)(plan)
+  plan = Optimizer(db, SelingerOpt)(plan)
+  # plan = Optimizer(db)(plan)
   for row in plan:
     vals = []
     for v in row:
@@ -60,7 +58,7 @@ def setup_row():
     print("[query]", qstr)
     start = time.time()
     output = run_query(db, qstr)
-    print(output)
+    # print("[output] ", output)
     print("[query] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END ROW MODE ===\n")
@@ -80,7 +78,7 @@ def setup_col():
     print("[query] ", qstr)
     start = time.time()
     output = run_query(db, qstr)
-    print(output)
+    # print("[output] ", output)
     print("[query] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END COL MODE ===\n")
