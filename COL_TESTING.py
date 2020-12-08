@@ -13,14 +13,21 @@ simple_test = [
 
 experiment_one = [
   "SELECT * from lineorder",
-  "SELECT lo_custkey, lo_suppkey FROM lineorder, supplier WHERE lineorder.lo_suppkey = supplier.s_suppkey",
+  "SELECT lo_custkey, lo_suppkey FROM lineorder, supplier WHERE lo_suppkey = s_suppkey",
   "SELECT sum(lo_extendedprice * lo_discount) AS revenue FROM lineorder, date WHERE lo_orderdate = d_datekey AND d_year = 1993 AND lo_discount BETWEEN 1 AND 3 AND lo_quantity < 25"
 ]
 
 experiment_two = [
   "SELECT lo_orderkey FROM lineorder",
-  "SELECT p_name, p_category FROM part LIMIT 20",
-  "SELECT c_nation FROM customer WHERE nation = 'UNITED STATES'"
+  "SELECT p_name, p_category FROM part",
+  "SELECT c_nation FROM customer WHERE c_nation = 'UNITED STATES'"
+]
+
+experiment_three = [
+  "SELECT sum(lo_extendedprice * lo_discount) AS revenue FROM lineorder, date WHERE lo_orderdate = d_datekey AND d_yearmonth = 199401 AND lo_discount BETWEEN 4 AND 6 AND lo_quantity BETWEEN 26 AND 35",
+  "SELECT sum(lo_revenue), d_year,p_brand FROM lineorder, date, part, supplier WHERE lo_orderdate = d_datekey AND lo_partkey = p_partkey AND lo_suppkey = s_suppkey AND p_category = 'MFGR#12' AND s_region = 'AMERICA' GROUP BY d_year, p_brand ORDER BY d_year, p_brand",
+  "SELECT c_nation, s_nation, d_year, sum(lo_revenue) AS revenue FROM customer, lineorder, supplier, date WHERE lo_custkey = c_custkey AND lo_suppkey = s_suppkey AND lo_orderdate = d_datekey AND c_region = 'ASIA' AND s_region = 'ASIA' AND d_year >= 1992 AND d_year <= 1997 GROUP BY c_nation, s_nation, d_year ORDER BY d_year ASC, revenue DESC;",
+  "SELECT d_year, c_nation, sum(lo_revenue - lo_supplycost) AS profit FROM date, customer, supplier, part, lineorder WHERE lo_custkey = c_custkey AND lo_suppkey = s_suppkey AND lo_partkey = p_partkey AND lo_orderdate = d_datekey AND c_region = 'AMERICA' AND s_region = 'AMERICA' AND (p_mfgr = 'MFGR#1' OR p_mfgr = 'MFGR#2') GROUP BY d_year, c_nation ORDER BY d_year, c_nation;"
 ]
 
 def run_query(db, qstr):
