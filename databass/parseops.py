@@ -160,7 +160,15 @@ class PSelectQuery(POp):
     froms = []
     for r in self.froms:
       if r.typ == PRangeVar.TABLE:
-        fop = Scan(r.e, r.alias)
+        project_exprs = []
+        aliases = []
+        if not self.is_agg_query:
+          for t in self.targets:
+            # print("targets: ", self.targets)
+            project_exprs.append(t.e)
+            aliases.append(t.alias)
+        fop = ScanWithProject(r.e, project_exprs, aliases, r.alias)
+        # fop = Scan(r.e, r.alias)
       elif r.typ == PRangeVar.QUERY:
         fop = SubQuerySource(r.e.to_plan(), r.alias)
       else:
@@ -247,19 +255,18 @@ class PSelectQuery(POp):
       plan = Limit(plan, self.limit.limit, self.limit.offset)
 
     # PROJECT 
-    if not self.is_agg_query:
-      project_exprs = []
-      aliases = []
-      for t in self.targets:
-        project_exprs.append(t.e)
-        aliases.append(t.alias)
+    # if not self.is_agg_query:
+    #   project_exprs = []
+    #   aliases = []
+    #   for t in self.targets:
+    #     project_exprs.append(t.e)
+    #     aliases.append(t.alias)
 
-      plan = Project(plan, project_exprs, aliases)
+    #   plan = Project(plan, project_exprs, aliases)
 
     # TODO: support distinct
     if self.distinct:
       raise Exception("DISTINCT not implemented")
-
     return plan
 
   def initialize(self, db=None):

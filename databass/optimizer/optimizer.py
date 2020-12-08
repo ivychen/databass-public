@@ -77,6 +77,8 @@ class Optimizer(object):
       self.resolve_attr_idxs(op.c.schema, op.order_exprs)
     elif op.is_type(Project):
       self.resolve_attr_idxs(op.c.schema, op.exprs)
+    elif op.is_type(ScanWithProject):
+      self.resolve_attr_idxs(op.schema, op.exprs)
     elif op.is_type(GroupBy):
       self.resolve_attr_idxs(op.c.schema, op.group_exprs)
       self.resolve_attr_idxs(op.c.schema, op.group_attrs)
@@ -86,6 +88,7 @@ class Optimizer(object):
         else:
           self.resolve_attr_idxs(op.group_term_schema, e)
 
+    # print(op)
     return op
 
   def find_idx(self, schema, a):

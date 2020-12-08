@@ -1,7 +1,7 @@
 ## Base
 pandas
 numpy
-gnureadline
+pyreadline
 click
 pytest
 parsimonious

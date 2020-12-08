@@ -1,5 +1,4 @@
 # Standard imports
-import sys
 import time
 
 # Databass imports
@@ -14,14 +13,14 @@ simple_test = [
 
 experiment_one = [
   "SELECT * from lineorder LIMIT 1",
-  "SELECT custkey, suppkey FROM lineorder, supplier WHERE lineorder.suppkey = s_suppkey",
+  "SELECT lo_custkey, lo_suppkey FROM lineorder, supplier WHERE lineorder.lo_suppkey = supplier.s_suppkey",
   "SELECT sum(lo_extendedprice * lo_discount) AS revenue FROM lineorder, date WHERE lo_orderdate = d_datekey AND d_year = 1993 AND lo_discount BETWEEN 1 AND 3 AND lo_quantity < 25"
 ]
 
 experiment_two = [
-  "SELECT orderkey FROM lineorder",
-  "SELECT category FROM part",
-  "SELECT nation FROM customer WHERE nation = 'UNITED STATES'"
+  "SELECT lo_orderkey FROM lineorder",
+  "SELECT p_category FROM part LIMIT 20",
+  "SELECT c_nation FROM customer WHERE nation = 'UNITED STATES'"
 ]
 
 def run_query(db, qstr):
@@ -32,8 +31,8 @@ def run_query(db, qstr):
 
 def run_plan(db, plan):
   databass_rows = list()
-  plan = Optimizer(db, SelingerOpt)(plan)
-  # plan = Optimizer(db)(plan)
+  # plan = Optimizer(db, SelingerOpt)(plan)
+  plan = Optimizer(db)(plan)
   for row in plan:
     vals = []
     for v in row:
@@ -74,12 +73,12 @@ def setup_col():
 
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
-  for qstr in simple_test:
+  for qstr in experiment_two[1:2]:
     print("[query] ", qstr)
     start = time.time()
     output = run_query(db, qstr)
-    # print("[output] ", output)
     print("[query] took %0.5f sec\n" % (time.time()-start))
+    print("[output] ", output)
 
   print("\n=== END COL MODE ===\n")
 

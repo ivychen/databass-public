@@ -23,7 +23,7 @@ class Estimator(object):
     if op in self.costs:
       return self.costs[op]
 
-    if op.is_type(Scan):
+    if op.is_type(Scan) or op.is_type(ScanWithProject):
       cost = self.db[op.tablename].stats.card
     elif op.is_type(HashJoin):
       cost = self.cost(op.l) + self.cost(op.r)
@@ -42,7 +42,7 @@ class Estimator(object):
     if op in self.cards:
       return self.cards[op]
 
-    if op.is_type(Scan):
+    if op.is_type(Scan) or op.is_type(ScanWithProject):
       card = self.db[op.tablename].stats.card
     elif op.is_type(Join):
       card = self.card(op.l) * self.card(op.r)
@@ -60,7 +60,7 @@ class Estimator(object):
     Computes the selectivity of the operator depending on the number of
     tables, the predicate, and the selectivities of the join attributes
     """
-    if op.is_type(Scan):
+    if op.is_type(Scan) or op.is_type(ScanWithProject):
       return 1.0
     if op.is_type(HashJoin):
       lsel = self.selectivity_cond(op.join_attrs[0])

@@ -74,11 +74,14 @@ class Database(object):
     for root, dirs, files in os.walk("."):
       for fname in files:
         fname_lower = fname.lower()
+        # skip this file for now
+        if fname_lower == 'lineorder.tbl':
+          continue
         if self._mode == Mode.ROW:
-          if fname_lower.endswith(".tbl"):
+          if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
             self.register_file_by_path(os.path.join(root, fname))
         else:
-          if fname_lower.endswith("data.csv") or fname_lower.endswith("data4.csv"):
+          if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
             self.register_file_by_path(os.path.join(root, fname))
 
   def register_file_by_path(self, path):

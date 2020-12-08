@@ -449,8 +449,6 @@ class Attr(ExprBase):
       if other.matches(self): return True
     return False
 
-
-
   def __call__(self, row, *args):
     return row[self.idx]
 
