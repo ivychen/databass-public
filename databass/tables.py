@@ -108,7 +108,7 @@ class InMemoryColumnTable(Table):
     #   col_schema.attrs.append(attr)
     #   yield ColumnTuple(col_schema, column)
 
-  # get item: idx(row index, col index)
+  # get item: idx(row index, attribute)
   def __getitem__(self, idx):
     col_index = self.attr_to_idx[idx[1]]
     return self.columns[col_index][idx[0]]

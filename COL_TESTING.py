@@ -12,7 +12,7 @@ simple_test = [
 ]
 
 experiment_one = [
-  "SELECT * from lineorder LIMIT 1",
+  "SELECT * from lineorder",
   "SELECT lo_custkey, lo_suppkey FROM lineorder, supplier WHERE lineorder.lo_suppkey = supplier.s_suppkey",
   "SELECT sum(lo_extendedprice * lo_discount) AS revenue FROM lineorder, date WHERE lo_orderdate = d_datekey AND d_year = 1993 AND lo_discount BETWEEN 1 AND 3 AND lo_quantity < 25"
 ]

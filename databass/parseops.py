@@ -257,14 +257,14 @@ class PSelectQuery(POp):
       plan = Limit(plan, self.limit.limit, self.limit.offset)
 
     # PROJECT 
-    # if not self.is_agg_query:
+    # if self.db.mode == Mode.ROW and not self.is_agg_query:
     #   project_exprs = []
     #   aliases = []
     #   for t in self.targets:
     #     project_exprs.append(t.e)
     #     aliases.append(t.alias)
 
-    #   plan = Project(plan, project_exprs, aliases)
+    #  plan = Project(plan, project_exprs, aliases)
 
     # TODO: support distinct
     if self.distinct:

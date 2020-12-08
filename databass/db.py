@@ -74,8 +74,7 @@ class Database(object):
     for root, dirs, files in os.walk("."):
       for fname in files:
         fname_lower = fname.lower()
-        # skip this file for now
-        if fname_lower == 'lineorder.tbl':
+        if fname_lower == "lineorder.tbl":
           continue
         if self._mode == Mode.ROW:
           if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
@@ -114,7 +113,7 @@ class Database(object):
 
   # TODO(ic2389): Register column-oriented dataframe
   def register_dataframe(self, tablename, df):
-    self._df_registry[tablename] = df
+    # self._df_registry[tablename] = df
     schema = infer_schema_from_df(df)
 
     if self._mode == Mode.ROW:

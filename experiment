@@ -1,0 +1,52 @@
+Part: 200000 entries
+
+[query]  SELECT p_name FROM part
+scan with project: part
+QUERY PLAN 
+From()
+  ScanWithProject(part AS part)
+
+ROW:
+[query] took 0.63233 sec
+
+COL:
+[query] took 0.39286 sec
+
+Query:
+[query]  SELECT p_name, p_category FROM part
+scan with project: part
+QUERY PLAN 
+From()
+  ScanWithProject(part AS part)
+
+ROW:
+[query] took 0.74805 sec
+
+COL:
+[query] took 0.62416 sec
+
+Query:
+[query]  SELECT p_partkey,p_name,p_mfgr FROM part
+scan with project: part
+QUERY PLAN 
+From()
+  ScanWithProject(part AS part)
+
+ROW:
+[query] took 0.80572 sec
+
+COL:
+[query] took 0.77567 sec
+
+Query:
+[query]  SELECT * FROM part
+scan with project: part
+QUERY PLAN 
+From()
+  ScanWithProject(part AS part)
+
+ROW:
+[query] took 1.62291 sec
+
+COL:
+[query] took 1.82920 sec
