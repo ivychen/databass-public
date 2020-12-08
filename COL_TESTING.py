@@ -90,7 +90,8 @@ def setup_col():
   print("\n=== END COL MODE ===\n")
 
 def main():
-  setup_col()
+  setup_row()
+  # setup_col()
 
 if __name__ == "__main__":
   main()

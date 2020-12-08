@@ -77,6 +77,7 @@ class Database(object):
         if fname_lower == "lineorder.tbl":
           continue
         if self._mode == Mode.ROW:
+          # if fname_lower.endswith("data4.csv") or fname_lower.endswith("data.csv"):
           if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
             self.register_file_by_path(os.path.join(root, fname))
         else:
@@ -117,15 +118,15 @@ class Database(object):
     schema = infer_schema_from_df(df)
 
     if self._mode == Mode.ROW:
-      print("[table] {tablename} with schema:".format(tablename=tablename), schema)
       rows = list(df.T.to_dict().values())
       rows = [[row[attr.aname] for attr in schema] for row in rows]
-      table = InMemoryTable(schema, rows)
+      table = InMemoryTable(schema, rows, tablename)
+      print("[table] {tablename} with schema:".format(tablename=table.name), schema)
       self.register_table(tablename, schema, table)
     elif self._mode == Mode.COLUMN_ALL:
-      print("[table] {tablename} with schema:".format(tablename=tablename), schema)
       columns = [df[df_colname].values.tolist() for df_colname in df]
-      table = InMemoryColumnTable(schema, columns)
+      table = InMemoryColumnTable(schema, columns, tablename)
+      print("[table] {tablename} with schema:".format(tablename=table.name), schema)
       self.register_table(tablename, schema, table)
     elif self._mode == Mode.COLUMN_SELECT:
       print("COLUMN_SELECT MODE IS NOT IMPLEMENTED")

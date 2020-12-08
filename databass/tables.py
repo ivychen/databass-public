@@ -1,11 +1,20 @@
 import pandas
 import numbers
 import os
+import csv
 from .stats import Stats, TableType
 from .tuples import *
 from .columns import * # ColumnTuple
 from .exprs import Attr
 from .schema import Schema
+
+def find(name, path="."):
+    """
+    Helper method to find file with {name} in {path}
+    """
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
 
 class Table(object):
   """
@@ -21,7 +30,7 @@ class Table(object):
     Table.id += 1
 
     self._stats = None
-
+    self._name = str(self.id) # default table name
 
   @staticmethod
   def from_rows(rows):
@@ -42,6 +51,10 @@ class Table(object):
       self._stats = Stats(self)
     return self._stats
 
+  @property
+  def name(self):
+    return self._name
+
   def col_values(self, field):
     idx = self.schema.idx(Attr(field.aname))
     return [row[idx] for row in self]
@@ -54,9 +67,11 @@ class InMemoryTable(Table):
   """
   Row-oriented table that stores its data as an array in memory.
   """
-  def __init__(self, schema, rows):
+  def __init__(self, schema, rows, tablename=None):
     super(InMemoryTable, self).__init__(schema)
     self._type = TableType.ROW
+    if tablename:
+      self._name = tablename
     self.rows = rows
     self.attr_to_idx = { a.aname: i 
         for i,a in enumerate(self.schema)}
@@ -66,9 +81,17 @@ class InMemoryTable(Table):
       self.stats[attr]
 
   def __iter__(self):
-    # Iterate through each row in table
-    for row in self.rows:
+    # TODO: Don't hardcode file extension
+    fpath = find(self.name+".csv")
+    chunksize = 1
+    for rowdf in pandas.read_csv(fpath, sep=',', chunksize=chunksize):
+      row = rowdf.values.flatten().tolist()
       yield ListTuple(self.schema, row)
+
+    # # LEGACY
+    # # Iterate through each row in table
+    # for row in self.rows:
+    #   yield ListTuple(self.schema, row)
 
   @property
   def type(self):
@@ -83,9 +106,11 @@ class InMemoryColumnTable(Table):
   schema(Schema) - this defined the schema for the table
   columns(list(ColumnTuple)) - list of ColumnTuples
   """
-  def __init__(self, schema, columns):
+  def __init__(self, schema, columns, tablename=None):
     super(InMemoryColumnTable, self).__init__(schema)
     self._type = TableType.COLUMN
+    if tablename:
+      self._name = tablename
     self.columns = columns
     self.attr_to_idx = { a.aname: i for i,a in enumerate(self.schema) }
     # maps index to attribute
