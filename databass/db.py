@@ -18,8 +18,8 @@ COLUMN_SELECT = column-store, load only some columns into memory
 """
 class Mode(enum.Enum):
   ROW = 1 # Loads all rows into memory
-  COLUMN_ALL = 2 # Loads all columns into memory
-  COLUMN_SELECT = 3 # Load only select columns into database
+  COLUMN_ALL = 2 # Loads columns into memory
+  COLUMN_SELECT = 2 # Loads columns into memory
 
 """
 Each subsequent phase incorporates the previous phase.
@@ -77,11 +77,13 @@ class Database(object):
         if fname_lower == "lineorder.tbl":
           continue
         if self._mode == Mode.ROW:
-          # if fname_lower.endswith("data4.csv") or fname_lower.endswith("data.csv"):
-          if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
+          if fname_lower.endswith("part.tbl"):
+          # if fname_lower.endswith("data.csv") or fname_lower.endswith("data4.csv"):
+          # if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
             self.register_file_by_path(os.path.join(root, fname))
         else:
-          if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
+          if fname_lower.endswith("part.tbl"):
+          # if fname_lower.endswith(".tbl") or fname_lower.endswith(".csv"):
             self.register_file_by_path(os.path.join(root, fname))
 
   def register_file_by_path(self, path):
@@ -114,7 +116,7 @@ class Database(object):
 
   # TODO(ic2389): Register column-oriented dataframe
   def register_dataframe(self, tablename, df):
-    # self._df_registry[tablename] = df
+    self._df_registry[tablename] = df
     schema = infer_schema_from_df(df)
 
     if self._mode == Mode.ROW:

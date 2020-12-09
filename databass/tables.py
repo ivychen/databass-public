@@ -76,22 +76,23 @@ class InMemoryTable(Table):
     self.attr_to_idx = { a.aname: i 
         for i,a in enumerate(self.schema)}
     # Populates col_stats with stats for each attribute in the schema
-    self.stats
-    for attr in self.schema:
-      self.stats[attr]
+    # self.stats
+    # for attr in self.schema:
+    #   self.stats[attr]
 
   def __iter__(self):
-    # TODO: Don't hardcode file extension
-    fpath = find(self.name+".csv")
-    chunksize = 1
-    for rowdf in pandas.read_csv(fpath, sep=',', chunksize=chunksize):
-      row = rowdf.values.flatten().tolist()
+    # Iterate through each row in table
+    for row in self.rows:
       yield ListTuple(self.schema, row)
 
-    # # LEGACY
-    # # Iterate through each row in table
-    # for row in self.rows:
-    #   yield ListTuple(self.schema, row)
+  # Generator for reading row on disk
+  def diskIter(self):
+    # TODO: Don't hardcode file extension
+    fpath = find(self.name+".tbl")
+    df = pandas.read_csv(fpath, sep=',')
+    for index, row in df.iterrows():
+      row = row.values.flatten().tolist()
+      yield ListTuple(self.schema, row)
 
   @property
   def type(self):
@@ -127,16 +128,18 @@ class InMemoryColumnTable(Table):
       for cols in self.columns:
         row.append(cols[i])
       yield ListTuple(self.schema, row)
-    # for idx, column in enumerate(self.columns):
-    #   col_schema = Schema([])
-    #   attr = self.idx_to_attr[idx]
-    #   col_schema.attrs.append(attr)
-    #   yield ColumnTuple(col_schema, column)
 
   # get item: idx(row index, attribute)
+  # returns list of values
   def __getitem__(self, idx):
-    col_index = self.attr_to_idx[idx[1]]
-    return self.columns[col_index][idx[0]]
+    fname = self.name+"-"+idx[1]+".csv"
+    fpath = find(fname)
+    df = pandas.read_csv(fpath, header=None)
+    return df.values.flatten().tolist()
+
+    # # LEGACY
+    # col_index = self.attr_to_idx[idx[1]]
+    # return self.columns[col_index][idx[0]]
   
   def __len__(self):
     return len(self.columns[0])

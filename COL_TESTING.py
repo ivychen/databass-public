@@ -1,5 +1,6 @@
 # Standard imports
 import time
+from resource import *
 
 # Databass imports
 from databass import *
@@ -9,6 +10,13 @@ simple_test = [
   "SELECT a, b FROM data",
   "SELECT data.e FROM data GROUP BY data.e",
   "SELECT data.a, data4.a FROM data, data4 WHERE data.a = data4.a"
+]
+
+debug_queries = [
+  "SELECT p_name FROM part",
+  "SELECT p_name, p_category FROM part",
+  "SELECT p_partkey,p_name,p_mfgr FROM part",
+  "SELECT * FROM part",
 ]
 
 experiment_one = [
@@ -33,7 +41,7 @@ experiment_three = [
 def run_query(db, qstr):
   plan = parse(qstr)
   plan = plan.to_plan()
-  print("QUERY PLAN", plan.pretty_print())
+  # print("QUERY PLAN", plan.pretty_print())
   return run_plan(db, plan)
 
 def run_plan(db, plan):
@@ -60,12 +68,14 @@ def setup_row():
 
   print("\n=== ROW MODE: RUNNING QUERIES ===\n")
 
-  for qstr in simple_test:
+  for qstr in debug_queries:
     print("[query]", qstr)
     start = time.time()
+    startMem = getrusage(RUSAGE_SELF).ru_maxrss
     output = run_query(db, qstr)
     # print("[output] ", output)
-    print("[query] took %0.5f sec\n" % (time.time()-start))
+    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
+    print("[query time] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END ROW MODE ===\n")
 
@@ -80,12 +90,14 @@ def setup_col():
 
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
-  for qstr in simple_test:
-    print("[query] ", qstr)
+  for qstr in debug_queries:
+    print("[query]", qstr)
     start = time.time()
+    startMem = getrusage(RUSAGE_SELF).ru_maxrss
     output = run_query(db, qstr)
-    print("[query] took %0.5f sec\n" % (time.time()-start))
-    print("[output] ", output)
+    # print("[output] ", output)
+    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
+    print("[query time] took %0.5f sec\n" % (time.time()-start))
 
   print("\n=== END COL MODE ===\n")
 

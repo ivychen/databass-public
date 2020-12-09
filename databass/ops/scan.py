@@ -120,21 +120,23 @@ class ScanWithProject(Source):
   def __iter__(self):
     # initialize a single intermediate tuple
     irow = ListTuple(self.schema, [])
-    # print(irow)
     if self.db.mode == Mode.COLUMN_ALL:
+      columns = []
+      # Load all the columns into memory
+      for _, expr in enumerate(self.exprs):
+        col_index = expr.aname # attribute name
+        col = self.db[self.tablename][(None, col_index)]
+        columns.append(col)
+
+      # Iterate through all the rows, construct ListTuple
       for row_index in range(len(self.db[self.tablename])):
-        for i, exp in enumerate(self.exprs):
-          col_index = exp.aname
-          # print(row_index, col_index)
-          val = self.db[self.tablename][(row_index, col_index)]
-          irow.row[i] = val
+        irow.row = [col[row_index] for col in columns]
         yield irow
     else:
-      # Override ColumnTable iterator to accept schema as parameter, then read
-      # only select columns from disk.
-      for row in self.db[self.tablename]:
+      for row in self.db[self.tablename].diskIter():
         for i, (exp) in enumerate(self.exprs):
-          irow.row[i] = exp(row)
+          # TODO: BUG in find_idx, can't use exp(row) here
+          irow.row[i] = row[self.db[self.tablename].attr_to_idx[exp.aname]]
         yield irow
 
   def __str__(self):
