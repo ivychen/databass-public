@@ -26,9 +26,10 @@ experiment_one = [
 ]
 
 experiment_two = [
-  "SELECT lo_orderkey FROM lineorder",
-  "SELECT p_name, p_category FROM part",
-  "SELECT c_nation FROM customer WHERE c_nation = 'UNITED STATES'"
+  # "SELECT lo_orderkey FROM lineorder",
+  # "SELECT p_name, p_category FROM part",
+  "SELECT s_name, c_name FROM supplier, customer WHERE supplier.s_city == customer.c_city",
+  # "SELECT c_nation FROM customer WHERE c_nation = 'UNITED STATES'"
 ]
 
 experiment_three = [
@@ -102,8 +103,8 @@ def setup_col():
   print("\n=== END COL MODE ===\n")
 
 def main():
-  setup_row()
-  # setup_col()
+  # setup_row()
+  setup_col()
 
 if __name__ == "__main__":
   main()

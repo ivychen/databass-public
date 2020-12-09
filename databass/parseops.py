@@ -164,7 +164,7 @@ class PSelectQuery(POp):
         aliases = []
         if not self.is_agg_query:
           for t in self.targets:
-            # print("target:", t, "t.e.tablename:", t.e.tablename, "r:", r)
+            # print("target:", t, "t.e.tablename:", t.e.tablename, "t.alias", t.alias, "r:", r)
             if r.e == t.e.tablename or t.e.tablename == None:
               project_exprs.append(t.e)
               aliases.append(t.alias)
