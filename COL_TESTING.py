@@ -18,9 +18,10 @@ experiment_one = [
 ]
 
 experiment_two = [
-  "SELECT lo_orderkey FROM lineorder",
-  "SELECT p_name, p_category FROM part",
-  "SELECT c_nation FROM customer WHERE c_nation = 'UNITED STATES'"
+  # "SELECT lo_orderkey FROM lineorder",
+  # "SELECT p_name, p_category FROM part",
+  "SELECT s_name, c_name FROM supplier, customer WHERE supplier.s_city == customer.c_city",
+  # "SELECT c_nation FROM customer WHERE c_nation = 'UNITED STATES'"
 ]
 
 experiment_three = [
@@ -80,18 +81,18 @@ def setup_col():
 
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
-  for qstr in simple_test:
+  for qstr in experiment_two:
     print("[query] ", qstr)
     start = time.time()
     output = run_query(db, qstr)
     print("[query] took %0.5f sec\n" % (time.time()-start))
-    print("[output] ", output)
+    # print("[output] ", output)
 
   print("\n=== END COL MODE ===\n")
 
 def main():
-  setup_row()
-  # setup_col()
+  # setup_row()
+  setup_col()
 
 if __name__ == "__main__":
   main()

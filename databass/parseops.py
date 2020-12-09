@@ -164,10 +164,16 @@ class PSelectQuery(POp):
         aliases = []
         if not self.is_agg_query:
           for t in self.targets:
-            # print("target:", t, "t.e.tablename:", t.e.tablename, "r:", r)
+            # print("target:", t, "t.e.tablename:", t.e.tablename, "t.alias", t.alias, "r:", r)
             if r.e == t.e.tablename or t.e.tablename == None:
               project_exprs.append(t.e)
               aliases.append(t.alias)
+          for cond in self.quals_cnf:
+            for ref_attr in cond.referenced_attrs:
+              if ref_attr.tablename == r.e:
+                project_exprs.append(ref_attr)
+                aliases.append(ref_attr.aname)
+                # print(ref_attr)
           fop = ScanWithProject(r.e, project_exprs, aliases, r.alias)
         else:
           fop = Scan(r.e, r.alias)

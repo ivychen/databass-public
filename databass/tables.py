@@ -82,7 +82,7 @@ class InMemoryTable(Table):
 
   def __iter__(self):
     # TODO: Don't hardcode file extension
-    fpath = find(self.name+".csv")
+    fpath = find(self.name+".tbl")
     chunksize = 1
     for rowdf in pandas.read_csv(fpath, sep=',', chunksize=chunksize):
       row = rowdf.values.flatten().tolist()
