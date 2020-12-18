@@ -5,18 +5,36 @@ from resource import *
 # Databass imports
 from databass import *
 
-simple_test = [
-  "SELECT * FROM data",
-  "SELECT a, b FROM data",
-  "SELECT data.e FROM data GROUP BY data.e",
-  "SELECT data.a, data4.a FROM data, data4 WHERE data.a = data4.a"
-]
-
-debug_queries = [
+queries_part = [
   "SELECT p_name FROM part",
   "SELECT p_name, p_category FROM part",
   "SELECT p_partkey,p_name,p_mfgr FROM part",
   "SELECT * FROM part",
+]
+
+queries_date = [
+  "SELECT d_datekey FROM date",
+  "SELECT d_datekey, d_date FROM date",
+  "SELECT d_datekey, d_date,d_daynuminmonth,d_sellingseason FROM date",
+  "SELECT d_datekey,d_date,d_dayofweek,d_month,d_year,d_yearmonthnum,d_yearmonth,d_daynuminweek FROM date",
+  "SELECT d_datekey,d_date,d_dayofweek,d_month,d_year,d_yearmonthnum,d_yearmonth,d_daynuminweek,d_daynuminmonth,d_daynuminyear,d_monthnuminyear,d_weeknuminyear,d_sellingseason,d_lastdayinweekfl,d_lastdayinmonthfl,d_holidayfl FROM date",
+  "SELECT * FROM date",
+]
+
+queries_customer = [
+  "SELECT c_name FROM customer",
+  "SELECT c_name, c_address FROM customer",
+  "SELECT c_name, c_address, c_phone, c_mktsegment FROM customer",
+  "SELECT * FROM customer",
+]
+
+queries_lineorder = [
+  "SELECT lo_orderkey FROM lineorder",
+  "SELECT lo_orderkey,lo_linenumber FROM lineorder",
+  "SELECT lo_orderkey,lo_linenumber,lo_custkey,lo_partkey FROM lineorder",
+  "SELECT lo_orderkey,lo_linenumber,lo_custkey,lo_partkey,lo_suppkey,lo_orderdate,lo_orderpriority,lo_shippriority FROM lineorder",
+  "SELECT lo_orderkey,lo_linenumber,lo_custkey,lo_partkey,lo_suppkey,lo_orderdate,lo_orderpriority,lo_shippriority,lo_quantity,lo_extendedprice,lo_ordtotalprice,lo_discount,lo_revenue,lo_supplycost,lo_tax,lo_commitdate FROM lineorder",
+  "SELECT * FROM lineorder",
 ]
 
 experiment_one = [
@@ -69,14 +87,14 @@ def setup_row():
 
   print("\n=== ROW MODE: RUNNING QUERIES ===\n")
 
-  for qstr in debug_queries:
+  for qstr in queries_lineorder:
     print("[query]", qstr)
-    start = time.time()
     startMem = getrusage(RUSAGE_SELF).ru_maxrss
+    start = time.time()
     output = run_query(db, qstr)
     # print("[output] ", output)
-    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
     print("[query time] took %0.5f sec\n" % (time.time()-start))
+    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
 
   print("\n=== END ROW MODE ===\n")
 
@@ -91,14 +109,14 @@ def setup_col():
 
   print("\n=== COL MODE: RUNNING QUERIES ===\n")
 
-  for qstr in debug_queries:
+  for qstr in queries_lineorder:
     print("[query]", qstr)
-    start = time.time()
     startMem = getrusage(RUSAGE_SELF).ru_maxrss
+    start = time.time()
     output = run_query(db, qstr)
     # print("[output] ", output)
-    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
     print("[query time] took %0.5f sec\n" % (time.time()-start))
+    print("[query memory] ru_maxrss diff %0.5f bytes" % (getrusage(RUSAGE_SELF).ru_maxrss-startMem))
 
   print("\n=== END COL MODE ===\n")
 
